@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+      "target": "es2020",
+      "checkJs": true,
+      "lib": [
+      ]
+  },
+  "exclude": [
+      "*.log"
+  ],
+  "include": [
+      "*.html"
+  ]
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+
+<body>
+    <canvas id="canvas-id">
+    </canvas>
+    ↑ここにファイルをドラッグアンドドロップ
+
+    <script>
+        
+        // dom に渡されたオブジェクトにドラッグアンドドロップされたファイルを読み，
+        // onFileLoaded で渡された関数に内容を渡す
+        function initFileReader(dom, onFileLoaded) {
+            function handleFileSelect(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+
+                let files = evt.dataTransfer.files; // FileList object.
+                for (let f of files) {
+                    let reader = new FileReader();
+                    reader.onload = function() {
+                        onFileLoaded(reader.result);
+                    };
+                    reader.readAsText(f);        
+                }
+            }
+            function handleDragOver(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+            }
+            // ドラッグアンドロップのハンドラの設定
+            dom.addEventListener("dragover", handleDragOver, false);    // これをブロックしておかないと，新しいファイルが開いてしまう
+            dom.addEventListener("drop", handleFileSelect, false);
+        }
+
+        
+        // id が "canvas-id" となっている canvas タグのオブジェクトを取得 
+        let canvas = document.querySelector("canvas#canvas-id");
+
+        // 幅と高さを設定
+        let width = 800;
+        let height = 600;
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+
+
+        // 第一引数に指定したタグにドロップされたファイルの読み出し
+        function drawData(data){
+            //console.log(data);
+
+            // 背景を塗りつぶし
+            let c = canvas.getContext("2d");
+            c.fillStyle = "rgb(200,200,200)";
+            c.fillRect(0, 0, width, height);
+
+            // 改行で区切って行を取り出す
+            let lines = data.split(/\n/);   
+
+            // 各行ごとの処理
+            for (let line of lines) {
+                let words = line.split(/\t/);   // タブで区切る
+                if (words[0] == "c") { // コミット
+                    c.fillStyle = "rgb(255,255,255)";   // 白
+                }
+                else if (words[0] == "a") { // アボート
+                    c.fillStyle = "rgb(0,0,0)"; // 黒
+                }
+                let left = words[2];    // タイムスタンプの横位置に白を描画
+                c.fillRect(left, 0, 1, height);
+            }
+        }
+
+        // 第一引数に指定したタグにドロップされたファイルの読み出し
+        initFileReader(canvas, drawData);
+
+// ドラッグアンドドロップするのがめんどい時は以下のように直接書いてテストしてもよい
+// ただし，行頭にスペースがあると動かないので注意
+// let data = `
+// c	0	10
+// a	1	30
+// c	2	80
+// `;
+// drawData(data);
+
+    </script>
+
+</body>
+
+</html>

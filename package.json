@@ -1,0 +1,19 @@
+{
+  "name": "tm-viewer",
+  "version": "0.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ryota Shioya <shioya@ci.i.u-tokyo.ac.jp>",
+  "contributors": [
+  ],
+  "repository": {
+    "url": "https://github.com/shioyadan/tm-viewer"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
