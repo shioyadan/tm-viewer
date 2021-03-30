@@ -1,4 +1,5 @@
-"strict";
+// strict モードにするおまじない
+"use strict";
 
 // dom に渡されたオブジェクトにドラッグアンドドロップされたファイルを読み，
 // onFileLoaded で渡された関数に内容を渡す
@@ -28,7 +29,7 @@ function initFileReader(dom, onFileLoaded) {
 
 // id が "canvas-id" となっている canvas タグのオブジェクトを取得 
 let canvas = document.querySelector("canvas#canvas-id");
-let c = canvas.getContext("2d");
+let ctx = canvas.getContext("2d");
 
 // 幅と高さを設定
 let width = 800;
@@ -36,13 +37,14 @@ let height = 600;
 
 // 高解像度ディスプレイでぼけるのでおまじない
 let devicePixelRatio = window.devicePixelRatio || 1;
-let backingStoreRatio = c.backingStorePixelRatio || 1;
+let backingStoreRatio = ctx.backingStorePixelRatio || 1;
 let ratio = devicePixelRatio / backingStoreRatio;
 canvas.width = width * ratio;
 canvas.height = height * ratio;
-c.scale(ratio, ratio);
+ctx.scale(ratio, ratio);
 canvas.style.width = `${width}px`;
 canvas.style.height = `${height}px`;
+
 
 // 読み出し済みデータ
 let loadedData = null;
@@ -56,8 +58,8 @@ function drawData(data){
     //console.log(data);
 
     // 背景を塗りつぶし
-    c.fillStyle = "rgb(200,200,200)";
-    c.fillRect(0, 0, width, height);
+    ctx.fillStyle = "rgb(200,200,200)";
+    ctx.fillRect(0, 0, width, height);
 
     // 改行で区切って行を取り出す
     let lines = data.split(/\n/);   
@@ -66,18 +68,18 @@ function drawData(data){
     for (let line of lines) {
         let words = line.split(/\t/);   // タブで区切る
         if (words[0] == "c") { // コミット
-            c.fillStyle = "rgb(255,255,255)";   // 白
+            ctx.fillStyle = "rgb(255,255,255)";   // 白
         }
         else if (words[0] == "a") { // アボート
-            c.fillStyle = "rgb(0,0,0)"; // 黒
+            ctx.fillStyle = "rgb(0,0,0)"; // 黒
         }
         else if (words[0] == "b") { // 開始
-            c.fillStyle = "rgb(200,100,100)"; // 赤
+            ctx.fillStyle = "rgb(200,100,100)"; // 赤
         }
 
         // タイムスタンプの横位置に上で指定した色を描画
         let left = words[3] * zoomRatio;    // 適当に倍率をかける
-        c.fillRect(left, 0, 1, height); // 横位置，縦位置，幅，高さ で塗りつぶし
+        ctx.fillRect(left, 0, 1, height); // 横位置，縦位置，幅，高さ で塗りつぶし
     }
 }
 
@@ -91,8 +93,6 @@ document.onkeydown = function(e) {
     zoomRatio *= key == "ArrowUp" ? 1.1 : 0.9;
     drawData(loadedData);
 };
-
-
 
 // ドラッグアンドドロップするのがめんどい時は以下のように直接書いてテストしてもよい
 // ただし，行頭にスペースがあると動かないので注意
